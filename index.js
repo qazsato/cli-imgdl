@@ -125,15 +125,16 @@ let q3 = (urls, callback) => {
       }
     }
   ], answers => {
+    let tasks = [];
     let extentions = answers.extensions;
     for (let i = 0; i < urls.length; i++) {
       if (isDownloadable(urls[i], extentions)) {
-        request
-          .get(urls[i])
-          .pipe(fs.createWriteStream(getImageName(urls[i])));
+        tasks.push(getRequest(urls[i]));
       }
     }
-    callback();
+    async.waterfall(tasks, () => {
+      callback();
+    });
   });
 
   let isDownloadable = (url, extentions) => {
@@ -149,6 +150,16 @@ let q3 = (urls, callback) => {
   let getImageName = url => {
     return url.split("/")[url.split("/").length - 1];
   };
+
+  let getRequest = (url) => {
+    return (callback) => {
+      setTimeout(function () {
+        request
+          .get(url).pipe(fs.createWriteStream(getImageName(url)));
+        callback();
+      }, 1000);
+    }
+  }
 }
 
 main();
