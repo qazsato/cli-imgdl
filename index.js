@@ -36,7 +36,6 @@ let q1 = callback => {
       type     : "input",
       name     : "input",
       message  : "Enter the URL :",
-      default  : "http://ikakode.herokuapp.com/power",
       validate : value => {
         return value.trim() ? true : "The input content is incorrect";
       }
